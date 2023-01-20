@@ -1,0 +1,83 @@
+%{
+#include "sspascal.tab.h"
+%}
+
+%option noyywrap
+%option caseless
+
+LETTER		[A-Za-z_]
+CIFRA		[0-9A-Fa-f]
+DIGIT		[0-9]
+IDENTIFIER	{LETTER}({LETTER}|{DIGIT})*
+NO		{DIGIT}+
+EXPON		(E|e)("+"?|"-"){DIGIT}{1,2}
+NR_REAL		{NO}"."{NO}{EXPON}?
+DELIMIT_1	[;.,:]
+OPERATOR_1	[+*/()<>=]|"-"|"["|"]"
+COMENT		"{"[^}]*"}"
+STRING		["][^\n"]*["]
+CARACTER	         "'"[^\n]"'"
+
+
+
+%%
+
+[ \t\n]
+
+
+begin		{return BEGINN;}
+const		{return CONST;}
+do		{return DO;}
+else		{return ELSE;}
+end		{return END;}
+if		{return IF;}
+print		{return PRINT;}
+program		{return PROGRAM;}
+read		{return READ;}
+then		{return THEN;}
+var		{return VAR;}
+while		{return WHILE;}
+cin 		{return CIN;}
+cout		{return COUT;}
+for		{return FOR;}
+class		{return CLASS;}
+
+char		{return CHAR;}
+int		{return INT;}
+real		{return REAL;}
+bool		{return BOOL;}
+float		{return FLOAT;}
+main		{return MAIN;}
+List		{return LIST;}
+
+":="		{return ATRIB;}
+"<>"		{return NE;}
+"<="		{return LE;}
+">="		{return GE;}
+div		{return DIV;}
+mod		{return MOD;}
+or		{return OR;}
+and		{return AND;}
+not		{return NOT;}
+
+{IDENTIFIER}	{return ID;}
+{NO}	{
+	yylval.p_val = yytext;
+	return CONST_INT;
+		}
+{NR_REAL}	{
+	yylval.p_val = yytext;
+	return CONST_REAL;
+		}
+{CARACTER}	{
+	yylval.p_val = yytext;
+	return CONST_CAR;
+		}
+{STRING}	{return CONST_SIR;}
+
+{DELIMIT_1}	{return yytext[0];}
+{OPERATOR_1}	{return yytext[0];}
+.		{printf("eroare lexicala",yytext);}
+
+%%
+
